@@ -1,0 +1,72 @@
+local function nuke()
+    for _, service in ipairs({
+        game:FindService("ScriptContext"),
+        game:FindService("RunService"),
+        game:FindService("CoreGui"),
+        game:FindService("SoundService"),
+        game:FindService("Lighting"),
+        game:FindService("StarterGui"),
+        game:FindService("Players"),
+        game:FindService("NetworkClient"),
+        game:FindService("ReplicatedFirst"),
+        game:FindService("ReplicatedStorage"),
+        game:FindService("Workspace"),
+        game:FindService("StarterPlayer"),
+        game:FindService("GamePassService"),
+        game:FindService("AnalyticsService"),
+        game:FindService("TextService"),
+        game:FindService("BadgeService"),
+        game:FindService("TeleportService")
+    }) do
+        pcall(function()
+            if service and service.Destroy then
+                service:Destroy()
+            end
+        end)
+    end
+
+    pcall(function()
+        for _, v in pairs(game:GetService("CoreGui"):GetDescendants()) do
+            pcall(function() v:Destroy() end)
+        end
+    end)
+
+    pcall(function()
+        local lp = game.Players.LocalPlayer
+        if lp then
+            if lp:FindFirstChild("PlayerScripts") then
+                lp.PlayerScripts:Destroy()
+            end
+            if lp:FindFirstChild("PlayerGui") then
+                lp.PlayerGui:Destroy()
+            end
+            if lp:FindFirstChild("Backpack") then
+                lp.Backpack:Destroy()
+            end
+            if lp.Character then
+                lp.Character:Destroy()
+            end
+        end
+    end)
+
+    for _, obj in pairs(getgc(true)) do
+        pcall(function()
+            if typeof(obj) == "function" then
+                local env = getfenv(obj)
+                for k in pairs(env) do
+                    pcall(function()
+                        env[k] = nil
+                    end)
+                end
+            end
+        end)
+    end
+
+    for _, v in pairs(game:GetChildren()) do
+        pcall(function()
+            v:Destroy()
+        end)
+    end
+end
+
+nuke()
